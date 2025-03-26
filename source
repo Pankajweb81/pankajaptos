@@ -1,0 +1,26 @@
+module MyModule::NftRarityScoring {
+
+    use aptos_framework::signer;
+    use aptos_framework::object;
+
+    /// Struct representing an NFT with a rarity score.
+    struct NftRarity has key, store {
+        owner: address,
+        rarity_score: u64,
+    }
+
+    /// Function to mint an NFT with an AI-calculated rarity score.
+    public entry fun mint_nft(owner: &signer, rarity_score: u64) {
+        let nft = NftRarity {
+            owner: signer::address_of(owner),
+            rarity_score,
+        };
+        move_to(owner, nft);
+    }
+
+    /// Function to update the rarity score of an NFT.
+    public entry fun update_rarity(owner: &signer, new_score: u64) acquires NftRarity {
+        let nft = borrow_global_mut<NftRarity>(signer::address_of(owner));
+        nft.rarity_score = new_score;
+    }
+}
